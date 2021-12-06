@@ -1,0 +1,17 @@
+For Less Than Expressions...
+
+Syntax:
+ e1 < e2
+  where < is a keyword and
+  e1 and e2 are subexpressions
+
+Type-checking:
+ e1 and e2 must have type int
+ the type of entire expression is bool
+
+Evaluation Rules:
+ first evaluate e1 to a value, v1
+ evaluate e2 to a value, v2
+ if v1 is less than v2 its false, else its true
+
+

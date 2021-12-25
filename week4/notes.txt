@@ -1,0 +1,25 @@
+VIDEO 1
+Functional Programming:
+-Avoiding mutation
+-Using functions as values (passing them around)
+-Style encouraging recursion / recursive data structures
+-Style closer to mathematical definitions
+-Programming idioms using laziness (some functional languages like Haskell have this)
+
+Functional Languages are languages that make functional programming easy / the default 
+
+First-Class Function:
+-Functions are values too. You can use them WHEREVER we use values.
+-Most commonly used as an argument/result of another function. (Other function is called a higher-order function)
+
+Function Closure:
+-Function that uses bindings from outside the function definition
+-Makes first class functions much more powerful
+
+First Class Functions and Function Closure definitions are often confused/muddled.
+
+
+VIDEO 2
+-We can pass one function as an argument to another function
+-Elegant strategy for factoring out common code
+  - Replace N similar functions with calls to 1 function where you pass in N different (short) functions as argument

@@ -23,3 +23,169 @@ VIDEO 2
 -We can pass one function as an argument to another function
 -Elegant strategy for factoring out common code
   - Replace N similar functions with calls to 1 function where you pass in N different (short) functions as argument
+
+VIDEO 3
+-Many polymorphic functions are so generic and reuseable that they have polymorphic types
+-There are higher-order functions that are not polymorphic though
+-There are plenty of first-order functions that are polymorphic
+
+VIDEO 4
+-Anonymous Functions: Most often used as arguments to higher order functions
+-You can't use anonymous functions to define recursive functions
+-Anonymous functions are the way to go if you only ever need to use a function in 1 place in your code. No need to give it a name!
+
+VIDEO 5
+- If you have a function fn x => f x, the expression f will work on its own! The anonymous function in this case is superfluous.
+
+VIDEO 6
+-Map takes a function ('a -> 'b) and an a' list. Map return a b' list.
+-a' and b' can be the same! But they don't have to be.
+-Filter returns a subset of the list, so the output list has to be the same type as the input list. The function that it takes has to take an element of the list and return a boolean (true or false.) Therefore:
+-('a -> bool) * 'a list -> 'a list
+
+VIDEO 7
+-Remember, you can pass MULTIPLE functions as arguments
+-You can put functions in data structures (tuples, lists, etc.)
+-Functions can return functions as results
+-Can write higher-order functions that traverse your own data structures
+-REPL doesn't print unnecessary parentheses. t1->(t2->(t3->t4)) is printed more concisely as t1->t2->t3->t4.
+-Higher order functions can process any sort of recursive data structure
+-Predicates: functions that takes something in and return bools (returns true of false)
+
+VIDEO 8
+-Now that functions are being passed around... from what scope does it use bindings?
+-Answer: where the function was defined
+-A function value has two parts:
+  - The code (obviously!)
+  - The environment that was current when the function was defined! (This maybe wasn't so obvious before...)
+-This is a "pair", but unlike ML pairs, you can't access the pieces
+-All you can do is call the pair
+-This pair is called a function closure
+-A call evaluates the code part in the environment part (extended with the function argument)
+-This rule is lexical scope
+-There are lots of powerful idioms with higher-order functions that use lexical scope
+-The alternative to lexical scope is dynamic scope (and we'll learn why this isn't such a great idea)
+
+VIDEO 9
+-Always evaluate function body with the environment where the function was defined (extended by the function arguments)
+
+VIDEO 10
+-Lexical scope: use environment where function is defined
+-Dynamic scope: use environment where function is called
+-These days, lexical scope is the way most programming languages work (in the past, you might have learned both in a programming class)
+-Technical reasons:
+1. Function meaning does not depend on variable names used
+  - Can change names of variables and you can know it won't affect any of your callers
+    - E.g. you could change all the x to be q below, and it wouldn't affect any calls made to this function:
+      fun f y = 
+        let val x = y+1
+        in fn z => x+y+z end
+  - Can remove unused variables inside function body
+    If you did this with dynamic scope, there might be some g that uses that unused variable
+  - This ability to reason about the scope is essential to the modularity of functions! Super important in software development.
+
+2. Functions can be type-checked and reasoned about where they're defined, not where they're used.
+3. Closures can easily store the data they need
+  - Many more examples and idioms to come
+
+If dynamic scope is such a bad idea, why do we have a name for it?
+- Dynamic scope is occassionally convenient
+- Some languages like Racket have special ways to do it
+- Most languages don't bother offering dynamic scope
+- Exceptions act A LITTLE BIT like dynamic scope
+ - raise e transfers control to the current innermost handler
+ - Does not have to be syntactically inside a handle expression (and usually is not)
+
+VIDEO 11
+- Things we know:
+  - A function body is not evaluated until the function is called
+  - Function body is re-evaluated every time the function is called (using whatever given arguments are)
+  - Variable binding evaluates its expression when the binding is evaluated, not every time the variable is used
+- With closures, this means we can avoid repeating computations that do not depend on function arguments
+
+VIDEO 12
+-fold: traverses a recursive data structure like a list in order to produce a single answer
+-Accumulates an answer by repeatedly applying f to answer so far
+-This version folds left (others fold right)
+-fold(f,acc,[x1,x2,x3,x4]) computes f(f(f(f(acc,x1),x2),x3),x4)
+-Many languages have built-in support for iterator-like functions, and allow stopping early without resorting to exceptions
+-This pattern separates recursive traversal from data processing
+  - Can reuse same traversal for different data processing
+  - Can reuse same data processing for different data structures
+-Map, filter, and fold are much more powerful thanks to lexical scope and closures
+-Function passed in can use any "private" data in its environment
+-Iterator "doesn't even know the data is there" or what type it has
+
+VIDEO 13
+-As in math, function composition is right to left (you read it backwards...) In our code example:
+  - take the absolute value, convert to real, take the square root
+- Pipelines of functions are common in functional programming and many programmers prefer to read left-to-right
+- This is used in F# (a dialect of ML)
+
+VIDEO 14
+-Recall, every ML function takes exactly 1 argument
+-Previously, encoded n arguments via one n-tuple
+-Another way (currying): take one argument and return a function that takes another argument
+
+VIDEO 15
+-If you call a curried function with "too few arguments" you get back a closure "waiting for remaining arguments"!
+  - Called partial application
+  - Convenient & useful
+  - Can be done with any curried function
+-No new semantics. A pleasant idiom.
+-Value restriction: "type vars not generalized"
+  - This won't let you use your functions
+  - This only happens when the resulting partial application would be polymorphici
+
+VIDEO 16
+-What if you want to curry a tupled function or vice versa?
+-What if you want to pass in just later arguments and not first arguments (you HAVE to pass in arguments in order!)?
+-Currying can be very efficient depending on the language
+-SML does faster with tupling than currying, so if you need better performance...
+-A lot of other functional-languages do better with currying
+
+VIDEO 17
+-Mutable data structures are OK in some situations
+-When "update to state of world" is appropriate model
+-ML uses a separate construct for this: references
+-Not allowed to use mutation in HW
+-New type: t ref where t is a type
+-New expressions
+  - ref e to create a reference with initial contents e
+  - e1 := e2 to update contents
+  - !e to retrieve contents (not negation)
+
+
+VIDEO 18
+-
+
+VIDEO 19
+-
+
+VIDEO 20
+-
+
+VIDEO 21
+-
+
+VIDEO 22
+-
+
+VIDEO 23
+-
+
+VIDEO 1 of Course Motivation
+-
+
+VIDEO 2 of Course Motivation
+-
+
+VIDEO 3 of Course Motivation
+-
+
+VIDEO 4 of Course Motivation
+-
+
+VIDEO 5 of Course Motivation
+-
+

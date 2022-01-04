@@ -157,35 +157,77 @@ VIDEO 17
 
 
 VIDEO 18
--
+-Callback style programming is VERY common: library takes functions to apply later when an event occurs - e.g. when a key is pressed, mouse moves, etc.
+-Common in games
+-A library may accept multiple callbacks
+  -Different callbacks may need different private data with different types
+  -Fortunately, a function's type doesn't include the types of bindings in its environment
+  -In OOP, objects & private field are used similarly
+-We're going to use mutable state in our library, and it's reasonably appropriate here
+  -We really do want the "callbacks registered" to change when a function to register a callback is called
+-Library maintains a mutable state for "what callbacks are there" and provides a function for accepting new ones
+  -A real library would also support removing them, etc.
+  -In example, callbacks have type int->unit
+-The only public interface to our library will be a function onKeyEvent, the function for registering new callbacks
+  - val onKeyEvent : (int -> unit) -> unit (unit means there is no useful content returned, in this case a side effect of calling the function later)
 
 VIDEO 19
--
+-ML has a standard library
+  -Functions that you couldn't implement yourself (opening a file, setting a timer, etc.)
+  -Optional functions that are so common that having a standard definition is appropriate
+    -This way lots of people don't have to re-write the same functions
+-http://www.standardml.org/Basis/manpages.html
+  -Organized into structures & signatures
+-To use a binding, StructureName.functionName (e.g. List.map, String.isSubstring)
+-Can use the REPL to get types of arguments function takes by taking in that function (e.g. List.map)
+-Can get all the functions for a particular structure by calling signature.
 
 VIDEO 20
--
+-Can put multiple functions in a record, with all functions sharing the same private data
+-Ends up feeling like objects in OOP
 
 VIDEO 21
--
+-If language doesn't have closures, you can still program in this style. Might be more clumsy though.
+  -In OOP (Java) with one-method interfaces
+  -In procedural (C) with explicit environment arguments
 
 VIDEO 22
--
+-This was how to implement closures in Java
 
 VIDEO 23
--
+-This was how to implement closures in C
 
 VIDEO 1 of Course Motivation
 -
 
 VIDEO 2 of Course Motivation
--
+-What's the best programming language?
+  ... well, what's the best car or shoe?
+  IT REALLY DEPENDS ON YOUR PURPOSE
+-ML is like an old car. It's nice to learn how a car works using an older car, where it doesn't have all the fancy bells and whistles.
+-Focus of this course: Semantics & idioms
+-Semantics: so you can correctly reason about programs, interfaces, and compilers
+-Idioms: these make you a better programmer
 
 VIDEO 3 of Course Motivation
--
+-Are all programming languages the same?
+-On a technical level, yes
+  -Everything you can write in language X you can write it in language Y
+   (This is Church-Turing thesis)
+  -Variables, abstraction, one-of-types, recursive definitions all exist in every language in one form or another
+-On another level, no
+  -The primitive/default in one language is awkward in another
+  -Different languages have different "cultures"
+  -Beware the Turing tarpit (don't use the awkward, clumsy ways to get something done, just because it's possible in the language)
 
 VIDEO 4 of Course Motivation
--
+-Why teach 60-80% of the course with functional languages?
+  -Functional languages tend to be ahead of their time
+  -Recent surge in functional languages
+  -Popular adoption of ideas (closures, type inference, avoiding side effects)
 
 VIDEO 5 of Course Motivation
--
-
+-SML: statically typed, functional
+-Racket: dynamically typed, functional
+-Ruby: dynamically typed, object-oriented
+(Java would be the static + object-oriented)

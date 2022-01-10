@@ -135,7 +135,7 @@ VIDEO 15
 -No new semantics. A pleasant idiom.
 -Value restriction: "type vars not generalized"
   - This won't let you use your functions
-  - This only happens when the resulting partial application would be polymorphici
+  - This only happens when the resulting partial application would be polymorphic
 
 VIDEO 16
 -What if you want to curry a tupled function or vice versa?

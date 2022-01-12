@@ -95,3 +95,31 @@ fun count_wild_and_variable_lengths pattern =
 fun count_some_var (str, pattern) =
   g (fn () => 0) (fn x => if(String.isSubstring str x) then 1 else 0) pattern
 
+fun check_pat p =
+  let
+    fun variableNames p =
+     case p of
+	    Wildcard          => []
+	  | Variable x        =>  [x]
+	  | TupleP ps         => (List.foldl (fn (pat, acc) => (variableNames pat) @ acc) [] ps)
+    | ConstructorP(_,p) => variableNames p
+	  | _                 => []
+    fun doesntContainRepeats l =
+     case l of
+         [] => true
+        |vari::varris => if List.exists (fn x => (vari = x)) varris then false else doesntContainRepeats varris  in
+oesntContainRepeats (variableNames p)
+  end
+
+fun match (value,pat) =
+ case value*pat of
+  value*Variable v => (v,valu)
+ |value*WildCard => ()
+ |value*UnitP => ()
+ |value*ConstP i => ()
+ |value*TupleP p:pp => 
+ |value*ConstructorP str*p =>
+ |_ =>
+
+
+    

@@ -108,18 +108,23 @@ fun check_pat p =
      case l of
          [] => true
         |vari::varris => if List.exists (fn x => (vari = x)) varris then false else doesntContainRepeats varris  in
-oesntContainRepeats (variableNames p)
+doesntContainRepeats (variableNames p)
   end
-
-fun match (value,pat) =
- case value*pat of
-  value*Variable v => (v,valu)
- |value*WildCard => ()
- |value*UnitP => ()
- |value*ConstP i => ()
- |value*TupleP p:pp => 
- |value*ConstructorP str*p =>
- |_ =>
-
-
-    
+(*
+fun match (value,pat) = 
+    case (pat,value) of
+      (Wildcard,v) => SOME []
+      |(Variable v,p) => SOME [(v,value)] 
+      |(UnitP,Unit) => SOME []
+      |(ConstP i1,Const i2) => if i1=i2 then SOME [] else NONE
+      |(TupleP (p::ps),Tuple (v::vs)) => 
+          all_answers (fn (p::ps, v::vs) => 
+          (if List.length (p::ps) = List.length (v::vs)
+          then case ListPair.zip(p::ps,v::vs) of 
+                    [] => NONE
+                  |((valu,pattern)::lps) => (match(valu, pattern)@match(Tuple vs, TupleP ps))
+          else NONE))
+      |(ConstructorP (str,p), Constructor (str2,p2)) => 
+          (if str=str2 then match (p2,p) else NONE)
+      |(_,_) => NONE
+      *)

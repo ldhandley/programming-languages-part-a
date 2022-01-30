@@ -34,8 +34,118 @@ Video: Mutual Recursion
     fun later x = ... earlier(later,y)
 
 Video: Modules for Namespace Management
-*  
-*  
-*  
-*  
-*  
+* The purpose of modules is to help you organize large programs.  
+* structure MyModule = struct bindings end
+* Outside of the module, you can refer to bindings inside the module with ModuleName.bindingName 
+* The functions we've been using like List.foldl and String.toUpper are from modules!
+* Modules allow for namespace management
+  * Giving a heirarchy to names to avoid shadowing 
+  * Different modules can reuse names
+  * Very important, but not very interesting
+
+Video: Signatures & Hiding Things
+* Signatures: type for a module  
+ * What bindings does it have and what are their types
+* Can define a signature and then ascribe it to modules
+* Example:
+signature MATHLIB = 
+sig
+val fact: int -> int
+val half_pi: int 
+val doubler: int -> int
+end
+structure MyMathLib :> MATHLIB = 
+struct
+fun fact x = ...
+val half_pi: int 
+fun doubler x = x*2
+end
+* If the signature has something that the module isn't providing, then we'll get a type error. 
+* Signatures are really valuable because they help you hide bindings and type definitions. This is an important strategy for writing correct, robust, reuseable software.
+* So first, let's remind ourselves that functions already do ewll some forms of hiding:
+* The client doesn't need to know which way you defined double, they all work the same:
+  fun double x = x*2 
+  fun double x = x+x
+  val y = 2
+  fun double x = x*y 
+* Defining helper functions locally is also powerful
+  * Can change/remove functions later and know it affects no other code 
+* Would also be convenient to have "private" top-level functions too
+  * So two functions could easily share a helper function
+  * ML does this via signatures that omit bindings
+    * Anything not in the signature can't be used outside the module!
+
+Video: A Module Example & Signatures for Our Example
+* Abstract type: you can know type exists, but you can't know its definition (hides definition from users so they can't create invariant-violating values)
+  * Inside signature, just use: `type TYPENAME`. Doesn't show definition, just that the type exists.
+* Signatures hide implementation details from the users and can be used to define abstract types and enforce representation invariants. Signatures do this by hiding function signatures and data type constructors.
+* Signatures hide things in 2 ways:
+  * Deny bindings exist (val-bindings, fun-bindings, constructors) 
+  * Make types abstract (so clients cannot create values of them or access pieces directly)
+
+Video: Signature Matching
+* There are precise rules for signature matching for a module. For example `structure Foo :> BAR` is allowed if:
+  * Every non-abstract type in BAR is provided in Foo, as specified
+  * Every abstract type in BAR is provided in Foo in some way(can be datatype or type synonym)
+  * Every val-binding in BAR is provided in Foo, possibly with a more general or less abstract internal type
+    * A signature's type binding for a function must be more specific than the type binding for the function in the module
+  * Every exception in BAR is provided in Foo
+* Remember, Foo can have other bindings not specified in the signature (hidden bindings)
+
+Video: An Equivalent Structure
+* A key purpose of abstraction is to allow different implementations to be equivalent
+  * No client can tell which implementation you are using
+  * So can improve/replace/choose implementations later 
+  * Easier to do if you START with more abstract signatures (revealing only what you must)
+* By exposing less of the module, it is more likely one module implementation can be replaced by another because under a more restrictive signature, more implementation details are hidden, thus disallowing clients from exploiting the differences between the two modules.
+
+Video: Different Modules Define Different Types
+* You can't mix and match rational type from Rational1 and Rational2 modules. Each module defines a different type (Rational1.rational vs Rational2.rational)
+* Two modules can have the same signature, but still define different types
+
+Video: Equivalent Functions
+* It's easier to write equivalent functions when:
+  * Use abstraction (hiding things)
+  * Fewer side effects 
+* Developers think about equivalence all the time (can i simplify code? can I add new features without changing how any old features work? can I make code faster? can an external client tell if I made this change?) 
+* To focus discussion: when can we say 2 functions are equivalent, even without looking at all calls to them?
+  * May not know all the calls (we are editing a library) 
+* Two functions are equivalent if they have the same "observable behavior" no matter how they are used anywhere in any program 
+* Given equivalent arguments, they:
+  * produce equivalent results 
+  * have the same (non-)termination behavior
+  * mutate (non-local) memory in the same way
+  * do the same input/output
+  * raise the same exceptions
+* Notice that it's much easier to be equivalent if:
+  * there are fewer possible arguments, e.g. with a type system and abstraction 
+  * we avoid side-effects: mutation, input/output, and exceptions
+* Example: 
+  fun g (f x) = (f x) + (f x)
+  vs.
+  val y = 2
+  fun g (f,x) = y * (f x)
+They appear that they SHOULD be equivalent, except when you start to conside a function f that has side-effects. For example:
+g (fn i => (print "hi"; i), 7)
+With this f, the first implementation of g with print "hi" 2x, whereas the second only prints it once.
+
+Video: Standard Equivalences
+* Syntactic sugar is always equivalent to what it stands for 
+* Consistently renaming bound variables and uses of variables- these will always be equivalent before and after rename
+* Whether you use a helper function or not, it will be equivalent (refactoring with a helper function doesn't change anything) 
+* Unnecessary function wrapping also doesn't affect equivalency (only if functions have no side effects)
+* These are equivalent too:
+let val x = e1
+in e2 end
+vs.
+(fn x => e2) e1 
+  * These both evaluate e1 to v1 then evaluate e2 in an environment that extended to map x to v1
+  * Exactly the same evaluation of expressions and result
+  * But in ML, there's a type-system difference (the first x can have polymorphic type, but not the one on right)
+
+Video: Equivalence vs. Performance
+* 2 functions can be equivalent, but one function can be crazy slower compared to other
+* Three definitions of equivalence
+  * PL equivalence (same inputs, same outputs and effects) - ignores performance 
+  * Asymptotic equivalence (focus on algorithm and efficiency for larger and larger inputs) - ignores "4 times faster"
+  * Systems equivalence (account for constant overheads, performance tune) - beware of overtuning on "wrong" inputs

@@ -49,16 +49,16 @@ val longest_string2 =
                         else acc) ""
 
 fun longest_string_helper f = 
-  foldl (fn (x,y) => if f(x, y)
+foldl (fn (x,y) => if f(String.size x, String.size y)
                      then x
                      else y)
         ""
 
 val longest_string3 =
-  longest_string_helper (fn (x,y) => String.size x > String.size y) 
+  longest_string_helper (fn (x,y) => x > y) 
 
 fun longest_string4 l =
-  longest_string_helper (fn (x,y) => String.size x >= String.size y) l 
+  longest_string_helper (fn (x,y) => x >= y) l 
 
 val longest_capitalized  = 
    longest_string1 o only_capitals
